@@ -42,7 +42,7 @@ resource "aws_iam_role" "iam_for_lambda_{baseName}" {
   assume_role_policy = data.aws_iam_policy_document.iam_for_lambda_{baseName}.json
 }
 
-{#if native-function == false}
+{#if !native-function}
 
 resource "null_resource" "jar_file_{baseName}" {
 
