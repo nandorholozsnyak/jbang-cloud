@@ -5,8 +5,8 @@
     "q-aws-lambda-tf": {
       "file-refs": {
         "{filename}": "aws/aws-lambda.java.qute",
-        "generate-jar.sh": "aws/generate-jar.sh",
-        "generate-native-image.sh": "aws/generate-native-image.sh",
+        "generate-jar": "aws/generate-jar",
+        "generate-native-image": "aws/generate-native-image",
         "application.properties": "aws/application.properties",
         "lambda-aws.tf": "aws/lambda-aws.tf.qute"
       },
@@ -38,16 +38,6 @@
         }
       }
     },
-    "githubbot": {
-      "description": "Example of making a github app",
-      "file-refs": {
-        "{basename}.java": "qbot/bot.java.qute",
-        "bot-index.html": "qbot/bot-index.html",
-        ".env": "qbot/.env",
-        "qbot.png": "qbot/qbot.png",
-        "readme.adoc": "qbot/readme.adoc.qute"
-      }
-    },
     "q-aws-lambda": {
       "file-refs": {
         "{filename}": "aws/aws-lambda.java.qute",
@@ -68,7 +58,33 @@
         "application.properties": "aws/application.properties",
         "lambda-funq.tf": "aws/lambda-funq.tf.qute"
       },
-      "description": "Quarkus AWS Lambda template using Funq. Use the -Dnative-function flag to have native image based Terraform resources"
+      "description": "Quarkus AWS Lambda template using Funq. Use the -Dnative-function flag to have native image based Terraform resources",
+      "properties": {
+        "tf-providers": {
+          "description": "If enabled extra Terraform related providers will be generated",
+          "defaultValue": false
+        },
+        "tf-provider.aws.version": {
+          "description": "Version of the AWS Terraform provider",
+          "defaultValue": "3.71.0"
+        },
+        "tf-provider.archive.version": {
+          "description": "Version of the Archive Terraform provider",
+          "defaultValue": "2.2.0"
+        },
+        "tf-provider.null.version": {
+          "description": "Version of the NULL Terraform provider",
+          "defaultValue": "3.1.0"
+        },
+        "tf-provider.aws.region": {
+          "description": "AWS Region",
+          "defaultValue": "eu-central-1"
+        },
+        "native-function": {
+          "description": "Generate native executable based lambda function or not",
+          "defaultValue": false
+        }
+      }
     },
     "q-aws-lambda-sqs": {
       "file-refs": {

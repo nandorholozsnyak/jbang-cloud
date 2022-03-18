@@ -21,31 +21,33 @@ provider "aws" {
 }
 {/if}
 
+locals {
+ {baseName}-file-hash = fileexists("{baseName}.java") ? filebase64sha256("{baseName}.java") : base64sha256("0")
+}
+
+data "aws_iam_policy_document" "iam_for_lambda_{baseName}" {
+  version = "2012-10-17"
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      identifiers = ["lambda.amazonaws.com"]
+      type        = "Service"
+    }
+    effect = "Allow"
+  }
+}
 
 resource "aws_iam_role" "iam_for_lambda_{baseName}" {
   name = "iam_for_lambda_{baseName}"
+  assume_role_policy = data.aws_iam_policy_document.iam_for_lambda_{baseName}.json
+}
 
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "lambda.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
-}
-EOF
-}
+{#if native-function == false}
 
 resource "null_resource" "jar_file_{baseName}" {
 
   provisioner "local-exec" {
-    command = "sh generate-jar.sh {baseName}"
+    command = "bash generate-jar {baseName}"
   }
 }
 
@@ -63,9 +65,14 @@ resource "aws_lambda_function" "function_{baseName}" {
 
 }
 
+{/if}
+
 {#if native-function}
 
 resource "null_resource" "native_image_{baseName}" {
+  triggers = {
+    file-hash = local.{baseName}-file-hash
+  }
   provisioner "local-exec" {
     command = "sh generate-native-image.sh {baseName}"
   }

@@ -1,6 +1,6 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 //JAVA 11
-//DEPS io.quarkus:quarkus-bom:$\{quarkus.version:2.6.0.Final}@pom
+//DEPS io.quarkus:quarkus-bom:$\{quarkus.version:2.7.5.Final}@pom
 //DEPS io.quarkus:quarkus-funqy-amazon-lambda
 {#for dep in dependencies.orEmpty}
 //DEPS {dep}
@@ -30,32 +30,19 @@ public class {baseName} {
         if (sqsEvent.getRecords() != null) {
             LOG.info("Incoming object bodies: " + sqsEvent.getRecords().stream().map(SQSEvent.SQSMessage::getBody).collect(Collectors.joining(";")));
         }
-        return new OutputObject().setResult("OK");
+        return new OutputObject("OK", context.getAwsRequestId());
     }
 
 }
 
 class OutputObject {
 
-    private String result;
+    public String result;
 
-    private String requestId;
+    public String requestId;
 
-    public String getResult() {
-        return result;
-    }
-
-    public String getRequestId() {
-        return requestId;
-    }
-
-    public OutputObject setResult(String result) {
+    public OutputObject(String result, String requestId) {
         this.result = result;
-        return this;
-    }
-
-    public OutputObject setRequestId(String requestId) {
         this.requestId = requestId;
-        return this;
     }
 }

@@ -1,6 +1,6 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 //JAVA 11
-//DEPS io.quarkus:quarkus-bom:$\{quarkus.version:2.6.0.Final}@pom
+//DEPS io.quarkus:quarkus-bom:$\{quarkus.version:2.7.5.Final}@pom
 //DEPS io.quarkus:quarkus-amazon-lambda
 {#for dep in dependencies.orEmpty}
 //DEPS {dep}
@@ -24,7 +24,7 @@ public class {baseName} implements RequestHandler<InputObject, OutputObject>  {
 
     @Override
     public OutputObject handleRequest(InputObject input, Context context) {
-        return new OutputObject().setResult("OK").setRequestId(context.getAwsRequestId());
+        return new OutputObject("OK", context.getAwsRequestId());
     }
 
 }
@@ -35,25 +35,12 @@ class InputObject {
 
 class OutputObject {
 
-    private String result;
+    public String result;
 
-    private String requestId;
+    public String requestId;
 
-    public String getResult() {
-        return result;
-    }
-
-    public String getRequestId() {
-        return requestId;
-    }
-
-    public OutputObject setResult(String result) {
+    public OutputObject(String result, String requestId) {
         this.result = result;
-        return this;
-    }
-
-    public OutputObject setRequestId(String requestId) {
         this.requestId = requestId;
-        return this;
     }
 }
