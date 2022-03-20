@@ -10,6 +10,7 @@ resource "aws_cloudwatch_event_rule" "{baseName}_event_rule" {
     "source": [
       "aws.ecs"
     ],
+    #"ECS Deployment State Change"
     "detail-type": [
       "ECS Task State Change"
     ]
