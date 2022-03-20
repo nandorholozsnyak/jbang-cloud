@@ -1,0 +1,86 @@
+class EcsEvent {
+
+    public String source;
+    @JsonProperty("detail-type")
+    public String detailType;
+    public EcsDeploymentStatChange detail;
+
+    @Override
+    public String toString() {
+        return "InputObject{" +
+                "source='" + source + '\'' +
+                ", detailType='" + detailType + '\'' +
+                ", detail=" + detail +
+                '}';
+    }
+}
+
+interface AwsEventDetail {
+
+}
+
+class EcsDeploymentStatChange implements AwsEventDetail  {
+    public String eventType;
+    public String eventName;
+    public String deploymentId;
+    public String updatedAt;
+    public String reason;
+
+    @Override
+    public String toString() {
+        return "EcsDeploymentStatChange{" +
+                "eventType='" + eventType + '\'' +
+                ", eventName='" + eventName + '\'' +
+                ", deploymentId='" + deploymentId + '\'' +
+                ", updatedAt='" + updatedAt + '\'' +
+                ", reason='" + reason + '\'' +
+                '}';
+    }
+}
+
+
+class EcsEventDetail implements AwsEventDetail {
+    public String clusterArn;
+    public String containerInstanceArn;
+    public String desiredStatus;
+    public String lastStatus;
+    public String taskArn;
+    public String taskDefinitionArn;
+    public Integer version;
+    public Container[] containers;
+    public String createdAt;
+    public String updatedAt;
+
+    @Override
+    public String toString() {
+        return "EcsEventDetail{" +
+                "clusterArn='" + clusterArn + '\'' +
+                ", containerInstanceArn='" + containerInstanceArn + '\'' +
+                ", desiredStatus='" + desiredStatus + '\'' +
+                ", lastStatus='" + lastStatus + '\'' +
+                ", taskArn='" + taskArn + '\'' +
+                ", taskDefinitionArn='" + taskDefinitionArn + '\'' +
+                ", version=" + version +
+                ", containers=" + java.util.Arrays.toString(containers) +
+                ", createdAt='" + createdAt + '\'' +
+                ", updatedAt='" + updatedAt + '\'' +
+                '}';
+    }
+}
+
+class Container {
+    public String containerArn;
+    public String name;
+    public String lastStatus;
+    public String taskArn;
+
+    @Override
+    public String toString() {
+        return "Container{" +
+                "containerArn='" + containerArn + '\'' +
+                ", name='" + name + '\'' +
+                ", lastStatus='" + lastStatus + '\'' +
+                ", taskArn='" + taskArn + '\'' +
+                '}';
+    }
+}

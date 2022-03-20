@@ -14,3 +14,5 @@
 //Q:CONFIG quarkus.funqy.export=funqFunction
 {/if}
 //Q:CONFIG quarkus.banner.enabled=false
+
+{extraImport}

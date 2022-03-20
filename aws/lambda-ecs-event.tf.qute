@@ -1,0 +1,26 @@
+resource "aws_cloudwatch_event_target" "{baseName}_event_target" {
+  arn  = aws_lambda_function.function_{baseName}.arn
+  rule = aws_cloudwatch_event_rule.{baseName}_event_rule.id
+}
+
+resource "aws_cloudwatch_event_rule" "{baseName}_event_rule" {
+    name        = "ecs-task-state-change-capture-{baseName}"
+    event_pattern = <<PATTERN
+  {
+    "source": [
+      "aws.ecs"
+    ],
+    "detail-type": [
+      "ECS Task State Change"
+    ]
+  }
+  PATTERN
+}
+
+resource "aws_lambda_permission" "{baseName}_event_rule_invocation" {
+  statement_id = "allow_cloudwatch_to_call_start"
+  action = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.function_{baseName}.function_name
+  principal = "events.amazonaws.com"
+  source_arn = aws_cloudwatch_event_rule.{baseName}_event_rule.arn
+}

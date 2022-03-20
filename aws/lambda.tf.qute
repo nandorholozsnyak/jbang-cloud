@@ -1,3 +1,9 @@
+locals {
+ {baseName}-file-hash = fileexists("{baseName}.java") ? filebase64sha256("{baseName}.java") : base64sha256("0")
+ build-jar-{baseName} = "bash build-application jar {baseName}"
+ build-native-{baseName} = "bash build-application native {baseName}"
+}
+
 {#if tf-providers}
 terraform {
   required_version = ">= 0.14.0"
@@ -21,10 +27,6 @@ provider "aws" {
 }
 {/if}
 
-locals {
- {baseName}-file-hash = fileexists("{baseName}.java") ? filebase64sha256("{baseName}.java") : base64sha256("0")
-}
-
 data "aws_iam_policy_document" "iam_for_lambda_{baseName}" {
   version = "2012-10-17"
   statement {
@@ -41,77 +43,29 @@ resource "aws_iam_role" "iam_for_lambda_{baseName}" {
   name = "iam_for_lambda_{baseName}"
   assume_role_policy = data.aws_iam_policy_document.iam_for_lambda_{baseName}.json
 }
-
-{#if aws-lambda-logging}
-resource "aws_iam_policy" "{baseName}_lambda_logging" {
-  name        = "{baseName}-lambda_logging"
-  path        = "/"
-  description = "IAM policy for logging from a lambda"
-
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": [
-        "logs:CreateLogGroup",
-        "logs:CreateLogStream",
-        "logs:PutLogEvents"
-      ],
-      "Resource": "arn:aws:logs:*:*:*",
-      "Effect": "Allow"
-    }
-  ]
-}
-EOF
-}
-
-resource "aws_iam_role_policy_attachment" "{baseName}_logging" {
-  role       = aws_iam_role.iam_for_lambda_{baseName}.name
-  policy_arn = aws_iam_policy.{baseName}_lambda_logging.arn
-}
+{#if aws-vpc-integration is 'true'}
+{#include aws/lambda-vpc.tf.qute /}
 {/if}
 
-{#if aws-sqs-enabled}
-resource "aws_iam_role_policy" "{baseName}_sqs_policy" {
-  name   = "{baseName}-lambda_sqs"
-  role   = aws_iam_role.iam_for_lambda_{baseName}.id
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": [
-        "sqs:ReceiveMessage",
-        "sqs:DeleteMessage",
-        "sqs:GetQueueAttributes"
-      ],
-      "Effect": "Allow",
-      "Resource": "*"
-    }
-  ]
-}
-EOF
-}
-
-resource "aws_sqs_queue" "{baseName}_queue" {
-  name  = "{baseName}-queue"
-  # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue#argument-reference
-}
-
-resource "aws_lambda_event_source_mapping" "{baseName}_sqs_event_source" {
-  event_source_arn = aws_sqs_queue.{baseName}_queue.arn
-  function_name    = aws_lambda_function.function_{baseName}.arn
-}
+{#if aws-lambda-logging is 'true'}
+{#include aws/lambda-logging.tf.qute /}
 {/if}
 
-{#if native-function is true}
+{#if aws-sqs-enabled is 'true'}
+{#include aws/lambda-sqs.tf.qute /}
+{/if}
+
+{#if aws-ecs-event-change-capture is 'true'}
+{#include aws/lambda-ecs-event.tf.qute /}
+{/if}
+
+{#if native-function is 'true'}
 resource "null_resource" "native_image_{baseName}" {
   triggers = {
     file-hash = local.{baseName}-file-hash
   }
   provisioner "local-exec" {
-    command = "bash build-application native {baseName}"
+    command = local.build-native-{baseName}
   }
 }
 
@@ -143,7 +97,7 @@ resource "null_resource" "jar_file_{baseName}" {
     file-hash = local.{baseName}-file-hash
   }
   provisioner "local-exec" {
-    command = "bash build-application jar {baseName}"
+    command = local.build-jar-{baseName}
   }
 }
 
@@ -159,7 +113,6 @@ resource "aws_lambda_function" "function_{baseName}" {
   {#else if mode == 'funq' }
   handler          = "io.quarkus.funqy.lambda.FunqyStreamHandler::handleRequest"
   {/if}
-
 
   depends_on = [null_resource.jar_file_{baseName}]
 

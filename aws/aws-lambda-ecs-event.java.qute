@@ -1,0 +1,7 @@
+{#include aws/header.java.qute extraImport='import com.fasterxml.jackson.annotation.JsonProperty;' /}
+
+{#include aws/body.java.qute eventClass='EcsEvent' /}
+
+{#include aws/ecs-event.java.qute /}
+
+{#include aws/output.java.qute /}

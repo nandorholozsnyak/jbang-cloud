@@ -137,7 +137,13 @@
         "{filename}": "aws/aws-lambda-s3.java.qute",
         "application.properties": "aws/application.properties"
       },
-      "description": "Quarkus AWS Lambda template with incoming S3 event"
+      "description": "Quarkus AWS Lambda template with incoming S3 event",
+      "properties": {
+        "mode": {
+          "description": "Quarkus Lambda mode: simple or funq",
+          "default": "simple"
+        }
+      }
     },
     "q-aws-lambda-s3-tf": {
       "file-refs": {
@@ -179,6 +185,58 @@
         "aws-lambda-logging": {
           "description": "If logging should be enabled or not",
           "default": false
+        },
+        "native-function": {
+          "description": "Native executable based lambda or not",
+          "default": false
+        },
+        "lambda-handler": {
+          "description": "Lambda handler method's name. By default it will be decided by the 'mode' property, but could be overriden."
+        }
+      }
+    },
+    "q-aws-lambda-ecs-event-tf": {
+      "file-refs": {
+        "{filename}": "aws/aws-lambda-ecs-event.java.qute",
+        "application.properties": "aws/application.properties",
+        "build-application": "aws/build-application",
+        "lambda-{basename}.tf": "aws/lambda.tf.qute"
+      },
+      "description": "Quarkus AWS Lambda template to handle ECS event",
+      "properties": {
+        "mode": {
+          "description": "Quarkus Lambda mode: simple or funq",
+          "default": "simple"
+        },
+        "tf-providers": {
+          "description": "If enabled extra Terraform related providers will be generated",
+          "default": false
+        },
+        "tf-provider-aws-version": {
+          "description": "Version of the AWS Terraform provider",
+          "default": "3.71.0"
+        },
+        "tf-provider-archive-version": {
+          "description": "Version of the Archive Terraform provider",
+          "default": "2.2.0"
+        },
+        "tf-provider-null-version": {
+          "description": "Version of the NULL Terraform provider",
+          "default": "3.1.0"
+        },
+        "tf-provider-aws-region": {
+          "description": "AWS Region",
+          "default": "eu-central-1"
+        },
+        "aws-vpc-integration": {
+          "description": "AWSLambdaVPCAccessExecutionRole will be added to the lambda function "
+        },
+        "aws-lambda-logging": {
+          "description": "If logging should be enabled or not"
+        },
+        "aws-ecs-event-change-capture": {
+          "description": "If ECS event change capture should be included in Terraform scripts",
+          "default": true
         },
         "native-function": {
           "description": "Native executable based lambda or not",
