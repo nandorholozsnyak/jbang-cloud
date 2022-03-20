@@ -1,0 +1,42 @@
+{#if mode == 'simple'}
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
+import org.jboss.logging.Logger;
+
+public class {baseName} implements RequestHandler<{eventClass}, OutputObject>  {
+
+    private static final Logger LOG = Logger.getLogger({baseName}.class);
+
+    public {baseName}() {
+
+    }
+
+    @Override
+    public OutputObject handleRequest({eventClass} event, Context context) {
+        LOG.info("Incoming event:" + event);
+        return new OutputObject("OK", context.getAwsRequestId());
+    }
+
+}
+{/if}
+
+{#if mode == 'funq'}
+import io.quarkus.funqy.Funq;
+import org.jboss.logging.Logger;
+
+public class {baseName} {
+
+    private static final Logger LOG = Logger.getLogger({baseName}.class);
+
+    public {baseName}() {
+
+    }
+
+    @Funq("funqFunction")
+    public OutputObject handleRequest({eventClass} input) {
+        LOG.info("Incoming event:" + event);
+        return new OutputObject("OK","ID");
+    }
+
+}
+{/if}

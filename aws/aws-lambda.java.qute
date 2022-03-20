@@ -1,46 +1,7 @@
-///usr/bin/env jbang "$0" "$@" ; exit $?
-//JAVA 11
-//DEPS io.quarkus:quarkus-bom:$\{quarkus.version:2.7.5.Final}@pom
-//DEPS io.quarkus:quarkus-amazon-lambda
-{#for dep in dependencies.orEmpty}
-//DEPS {dep}
-{/for}
-//JAVA_OPTIONS -Djava.util.logging.manager=org.jboss.logmanager.LogManager
-//FILES application.properties
-//Q:CONFIG quarkus.banner.enabled=false
+{#include aws/header.java.qute /}
 
+{#include aws/body.java.qute eventClass='InputObject' /}
 
-import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.RequestHandler;
-import org.jboss.logging.Logger;
+{#include aws/input.java.qute /}
 
-public class {baseName} implements RequestHandler<InputObject, OutputObject>  {
-
-    private static final Logger LOG = Logger.getLogger({baseName}.class);
-
-    public {baseName}() {
-
-    }
-
-    @Override
-    public OutputObject handleRequest(InputObject input, Context context) {
-        return new OutputObject("OK", context.getAwsRequestId());
-    }
-
-}
-
-class InputObject {
-
-}
-
-class OutputObject {
-
-    public String result;
-
-    public String requestId;
-
-    public OutputObject(String result, String requestId) {
-        this.result = result;
-        this.requestId = requestId;
-    }
-}
+{#include aws/output.java.qute /}

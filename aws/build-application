@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+MODE=$1
+NAME=$2
+echo "Selected mode:"$MODE
+if [ $MODE == 'native' ]; then
+  jbang export portable --native --fresh --force --output=bootstrap $NAME.java
+fi
+if [ $MODE == 'jar' ]; then
+  jbang export portable --fresh --force $NAME.java && jar uf $NAME.jar lib/
+fi

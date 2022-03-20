@@ -4,20 +4,20 @@ terraform {
   required_providers {
     aws        = {
       source  = "hashicorp/aws"
-      version = "{tf-provider.aws.version ?: '3.71.0'}"
+      version = "{tf-provider-aws-version}"
     }
     archive    = {
       source  = "hashicorp/archive"
-      version = "{tf-provider.archive.version ?: '2.2.0'}"
+      version = "{tf-provider-archive-version}"
     }
     null = {
       source = "hashicorp/null"
-      version = "{tf-provider.null.version ?: '3.1.0'}"
+      version = "{tf-provider-null-version}"
     }
   }
 }
 provider "aws" {
-  region  = "{tf-provider.aws.region ?: 'eu-central-1'}"
+  region  = "{tf-provider-aws-region ?: 'eu-central-1'}"
 }
 {/if}
 
@@ -42,14 +42,76 @@ resource "aws_iam_role" "iam_for_lambda_{baseName}" {
   assume_role_policy = data.aws_iam_policy_document.iam_for_lambda_{baseName}.json
 }
 
-{#if native-function}
+{#if aws-lambda-logging}
+resource "aws_iam_policy" "{baseName}_lambda_logging" {
+  name        = "{baseName}-lambda_logging"
+  path        = "/"
+  description = "IAM policy for logging from a lambda"
 
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:*",
+      "Effect": "Allow"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "{baseName}_logging" {
+  role       = aws_iam_role.iam_for_lambda_{baseName}.name
+  policy_arn = aws_iam_policy.{baseName}_lambda_logging.arn
+}
+{/if}
+
+{#if aws-sqs-enabled}
+resource "aws_iam_role_policy" "{baseName}_sqs_policy" {
+  name   = "{baseName}-lambda_sqs"
+  role   = aws_iam_role.iam_for_lambda_{baseName}.id
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "sqs:ReceiveMessage",
+        "sqs:DeleteMessage",
+        "sqs:GetQueueAttributes"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_sqs_queue" "{baseName}_queue" {
+  name  = "{baseName}-queue"
+  # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue#argument-reference
+}
+
+resource "aws_lambda_event_source_mapping" "{baseName}_sqs_event_source" {
+  event_source_arn = aws_sqs_queue.{baseName}_queue.arn
+  function_name    = aws_lambda_function.function_{baseName}.arn
+}
+{/if}
+
+{#if native-function is true}
 resource "null_resource" "native_image_{baseName}" {
   triggers = {
     file-hash = local.{baseName}-file-hash
   }
   provisioner "local-exec" {
-    command = "bash generate-native-image {baseName}"
+    command = "bash build-application native {baseName}"
   }
 }
 
@@ -57,9 +119,10 @@ data "archive_file" "native_function_{baseName}" {
   output_path = "{baseName}-function.zip"
   type        = "zip"
   source_file = "bootstrap"
+  depends_on = [null_resource.native_image_{baseName}]
 }
 
-resource "aws_lambda_function" "function_{baseName}_native" {
+resource "aws_lambda_function" "function_{baseName}" {
   filename         = "{baseName}-function.zip"
   source_code_hash = fileexists("{baseName}-function.zip") ? filebase64sha256("{baseName}-function.zip") : base64sha256("0")
   function_name    = "{baseName}"
@@ -75,13 +138,12 @@ resource "aws_lambda_function" "function_{baseName}_native" {
 
 }
 {#else}
-
 resource "null_resource" "jar_file_{baseName}" {
   triggers = {
     file-hash = local.{baseName}-file-hash
   }
   provisioner "local-exec" {
-    command = "bash generate-jar {baseName}"
+    command = "bash build-application jar {baseName}"
   }
 }
 
@@ -90,7 +152,14 @@ resource "aws_lambda_function" "function_{baseName}" {
   source_code_hash = local.{baseName}-file-hash
   function_name    = "{baseName}"
   role             = aws_iam_role.iam_for_lambda_{baseName}.arn
+  {#if lambda-handler}
+  handler          = "{lambda-handler}"
+  {#else if mode == 'simple' }
   handler          = "io.quarkus.amazon.lambda.runtime.QuarkusStreamHandler::handleRequest"
+  {#else if mode == 'funq' }
+  handler          = "io.quarkus.funqy.lambda.FunqyStreamHandler::handleRequest"
+  {/if}
+
 
   depends_on = [null_resource.jar_file_{baseName}]
 

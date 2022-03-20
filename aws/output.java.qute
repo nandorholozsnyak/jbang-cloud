@@ -1,0 +1,11 @@
+class OutputObject {
+
+    public String result;
+
+    public String requestId;
+
+    public OutputObject(String result, String requestId) {
+        this.result = result;
+        this.requestId = requestId;
+    }
+}

@@ -2,87 +2,66 @@
   "catalogs": {},
   "aliases": {},
   "templates": {
-    "q-aws-lambda-tf": {
-      "file-refs": {
-        "{filename}": "aws/aws-lambda.java.qute",
-        "generate-jar": "aws/generate-jar",
-        "generate-native-image": "aws/generate-native-image",
-        "application.properties": "aws/application.properties",
-        "lambda-aws.tf": "aws/lambda-aws.tf.qute"
-      },
-      "description": "Quarkus AWS Lambda template with Terraform template. Use the -Dnative-function flag to have native image based Terraform resources",
-      "properties": {
-        "tf-providers": {
-          "description": "If enabled extra Terraform related providers will be generated",
-          "defaultValue": false
-        },
-        "tf-provider.aws.version": {
-          "description": "Version of the AWS Terraform provider",
-          "defaultValue": "3.71.0"
-        },
-        "tf-provider.archive.version": {
-          "description": "Version of the Archive Terraform provider",
-          "defaultValue": "2.2.0"
-        },
-        "tf-provider.null.version": {
-          "description": "Version of the NULL Terraform provider",
-          "defaultValue": "3.1.0"
-        },
-        "tf-provider.aws.region": {
-          "description": "AWS Region",
-          "defaultValue": "eu-central-1"
-        },
-        "native-function": {
-          "description": "Generate native executable based lambda function or not",
-          "defaultValue": false
-        }
-      }
-    },
     "q-aws-lambda": {
       "file-refs": {
         "{filename}": "aws/aws-lambda.java.qute",
         "application.properties": "aws/application.properties"
       },
-      "description": "Quarkus AWS Lambda template"
-    },
-    "q-aws-lambda-funq": {
-      "file-refs": {
-        "{filename}": "aws/aws-lambda-funq.java.qute",
-        "application.properties": "aws/application.properties"
-      },
-      "description": "Quarkus AWS Lambda template using Funq"
-    },
-    "q-aws-lambda-funq-tf": {
-      "file-refs": {
-        "{filename}": "aws/aws-lambda-funq.java.qute",
-        "application.properties": "aws/application.properties",
-        "lambda-funq.tf": "aws/lambda-funq.tf.qute"
-      },
-      "description": "Quarkus AWS Lambda template using Funq. Use the -Dnative-function flag to have native image based Terraform resources",
+      "description": "Quarkus AWS Lambda template",
       "properties": {
+        "mode": {
+          "description": "Quarkus Lambda mode: simple or funq",
+          "default": "simple"
+        }
+      }
+    },
+    "q-aws-lambda-tf": {
+      "file-refs": {
+        "{filename}": "aws/aws-lambda.java.qute",
+        "build-application": "aws/build-application",
+        "application.properties": "aws/application.properties",
+        "lambda-{basename}.tf": "aws/lambda.tf.qute"
+      },
+      "description": "Quarkus AWS Lambda template with Terraform template. Use the -Dnative-function flag to have native image based Terraform resources",
+      "properties": {
+        "mode": {
+          "description": "Quarkus Lambda mode: simple or funq",
+          "default": "simple"
+        },
         "tf-providers": {
           "description": "If enabled extra Terraform related providers will be generated",
-          "defaultValue": false
+          "default": false
         },
-        "tf-provider.aws.version": {
+        "tf-provider-aws-version": {
           "description": "Version of the AWS Terraform provider",
-          "defaultValue": "3.71.0"
+          "default": "3.71.0"
         },
-        "tf-provider.archive.version": {
+        "tf-provider-archive-version": {
           "description": "Version of the Archive Terraform provider",
-          "defaultValue": "2.2.0"
+          "default": "2.2.0"
         },
-        "tf-provider.null.version": {
+        "tf-provider-null-version": {
           "description": "Version of the NULL Terraform provider",
-          "defaultValue": "3.1.0"
+          "default": "3.1.0"
         },
-        "tf-provider.aws.region": {
+        "tf-provider-aws-region": {
           "description": "AWS Region",
-          "defaultValue": "eu-central-1"
+          "default": "eu-central-1"
+        },
+        "aws-vpc-integration": {
+          "description": "AWSLambdaVPCAccessExecutionRole will be added to the lambda function ",
+          "default": false
+        },
+        "aws-lambda-logging": {
+          "description": "If logging should be enabled or not",
+          "default": false
         },
         "native-function": {
-          "description": "Generate native executable based lambda function or not",
-          "defaultValue": false
+          "description": "Native executable based lambda or not",
+          "default": false
+        },
+        "lambda-handler": {
+          "description": "Lambda handler method's name. By default it will be decided by the 'mode' property, but could be overriden."
         }
       }
     },
@@ -91,14 +70,67 @@
         "{filename}": "aws/aws-lambda-sqs.java.qute",
         "application.properties": "aws/application.properties"
       },
-      "description": "Quarkus AWS Lambda template with incoming SQS event"
+      "description": "Quarkus AWS Lambda template with incoming SQS event",
+      "properties": {
+        "mode": {
+          "description": "Quarkus Lambda mode: simple or funq",
+          "default": "simple"
+        }
+      }
     },
-    "q-aws-lambda-sqs-funq": {
+    "q-aws-lambda-sqs-tf": {
       "file-refs": {
-        "{filename}": "aws/aws-lambda-sqs-funq.java.qute",
-        "application.properties": "aws/application.properties"
+        "{filename}": "aws/aws-lambda-sqs.java.qute",
+        "build-application": "aws/build-application",
+        "application.properties": "aws/application.properties",
+        "lambda-{basename}.tf": "aws/lambda.tf.qute"
       },
-      "description": "Quarkus AWS Lambda template with incoming SQS event using Funq"
+      "description": "Quarkus AWS Lambda template with incoming SQS event",
+      "properties": {
+        "mode": {
+          "description": "Quarkus Lambda mode: simple or funq",
+          "default": "simple"
+        },
+        "tf-providers": {
+          "description": "If enabled extra Terraform related providers will be generated",
+          "default": false
+        },
+        "tf-provider-aws-version": {
+          "description": "Version of the AWS Terraform provider",
+          "default": "3.71.0"
+        },
+        "tf-provider-archive-version": {
+          "description": "Version of the Archive Terraform provider",
+          "default": "2.2.0"
+        },
+        "tf-provider-null-version": {
+          "description": "Version of the NULL Terraform provider",
+          "default": "3.1.0"
+        },
+        "tf-provider-aws-region": {
+          "description": "AWS Region",
+          "default": "eu-central-1"
+        },
+        "aws-vpc-integration": {
+          "description": "AWSLambdaVPCAccessExecutionRole will be added to the lambda function ",
+          "default": false
+        },
+        "aws-lambda-logging": {
+          "description": "If logging should be enabled or not",
+          "default": false
+        },
+        "aws-sqs-enabled": {
+          "description": "If SQS queue should be created or not",
+          "default": true
+        },
+        "native-function": {
+          "description": "Native executable based lambda or not",
+          "default": false
+        },
+        "lambda-handler": {
+          "description": "Lambda handler method's name. By default it will be decided by the 'mode' property, but could be overriden."
+        }
+      }
     },
     "q-aws-lambda-s3": {
       "file-refs": {
@@ -107,12 +139,55 @@
       },
       "description": "Quarkus AWS Lambda template with incoming S3 event"
     },
-    "q-aws-lambda-s3-funq": {
+    "q-aws-lambda-s3-tf": {
       "file-refs": {
-        "{filename}": "aws/aws-lambda-s3-funq.java.qute",
-        "application.properties": "aws/application.properties"
+        "{filename}": "aws/aws-lambda-s3.java.qute",
+        "application.properties": "aws/application.properties",
+        "build-application": "aws/build-application",
+        "lambda-{basename}.tf": "aws/lambda.tf.qute"
       },
-      "description": "Quarkus AWS Lambda template with incoming S3 event using Funq"
+      "description": "Quarkus AWS Lambda template with incoming S3 event",
+      "properties": {
+        "mode": {
+          "description": "Quarkus Lambda mode: simple or funq",
+          "default": "simple"
+        },
+        "tf-providers": {
+          "description": "If enabled extra Terraform related providers will be generated",
+          "default": false
+        },
+        "tf-provider-aws-version": {
+          "description": "Version of the AWS Terraform provider",
+          "default": "3.71.0"
+        },
+        "tf-provider-archive-version": {
+          "description": "Version of the Archive Terraform provider",
+          "default": "2.2.0"
+        },
+        "tf-provider-null-version": {
+          "description": "Version of the NULL Terraform provider",
+          "default": "3.1.0"
+        },
+        "tf-provider-aws-region": {
+          "description": "AWS Region",
+          "default": "eu-central-1"
+        },
+        "aws-vpc-integration": {
+          "description": "AWSLambdaVPCAccessExecutionRole will be added to the lambda function ",
+          "default": false
+        },
+        "aws-lambda-logging": {
+          "description": "If logging should be enabled or not",
+          "default": false
+        },
+        "native-function": {
+          "description": "Native executable based lambda or not",
+          "default": false
+        },
+        "lambda-handler": {
+          "description": "Lambda handler method's name. By default it will be decided by the 'mode' property, but could be overriden."
+        }
+      }
     }
   }
 }

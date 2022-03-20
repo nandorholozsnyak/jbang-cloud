@@ -1,0 +1,16 @@
+///usr/bin/env jbang "$0" "$@" ; exit $?
+//JAVA 11
+//FILES application.properties
+//JAVA_OPTIONS -Djava.util.logging.manager=org.jboss.logmanager.LogManager
+//DEPS io.quarkus:quarkus-bom:$\{quarkus.version:2.7.5.Final}@pom
+{#for dep in dependencies.orEmpty}
+//DEPS {dep}
+{/for}
+{#if mode == 'simple'}
+//DEPS io.quarkus:quarkus-amazon-lambda
+{/if}
+{#if mode == 'funq'}
+//DEPS io.quarkus:quarkus-funqy-amazon-lambda
+//Q:CONFIG quarkus.funqy.export=funqFunction
+{/if}
+//Q:CONFIG quarkus.banner.enabled=false
