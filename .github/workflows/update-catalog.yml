@@ -1,0 +1,28 @@
+name: update-catalog
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  update-catalog-documentation:
+    runs-on: ubuntu-latest
+    name: Update catalog documentation
+    if: startsWith(github.event.head_commit.message, 'Updating jbang-catalog documentation') != true
+    steps:
+      - uses: actions/checkout@v3
+      - uses: rodnansol/jbang-catalog-document-generator-action@v0.1.0
+        name: Generate catalog document
+        with:
+          version: early-access
+          arguments: generate jbang-catalog.json -o README.adoc --custom-header=header.adoc --include-generation-date=true
+      - name: Commit document changes
+        shell: bash
+        run: |
+          git add README.adoc
+          git config --global user.email "${{ secrets.COMMITTER_EMAIL }}"
+          git config --global user.name "${{ secrets.COMMITTER_NAME }}"
+          git commit -m "Updating jbang-catalog documentation"
+          git push origin main
+

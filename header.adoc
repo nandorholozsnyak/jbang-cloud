@@ -1,0 +1,3 @@
+Welcome to this JBang catalog!
+
+It contains mostly cloud related templates to make sure you can start writing your Lambda functions easily :)
