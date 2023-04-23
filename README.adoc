@@ -1,13 +1,13 @@
 
-&#x3D; Welcome to this JBang catalog!
+= Welcome to this JBang catalog!
 
 It contains mostly cloud related templates to make sure you can start writing your Lambda functions easily :)
 
-&#x3D;&#x3D; How to add this catalog?
+== How to add this catalog?
 
 [source]
 ----
-jbang catalog add --name &quot;personal-rodnan&quot; -d &quot;Rodnan JBang catalog&quot; https://raw.githubusercontent.com/nandorholozsnyak/jbang-cloud/main/jbang-catalog.json
+jbang catalog add --name "personal-rodnan" -d "Rodnan JBang catalog" https://raw.githubusercontent.com/nandorholozsnyak/jbang-cloud/main/jbang-catalog.json
 ----
 
 == Catalogs
@@ -211,4 +211,4 @@ jbang init -t=q-aws-lambda-ecs-event-tf -Dproperty=value scriptOrFile
 
 
 
-Generation date: *2023-04-23T20:21:25.548613819*
+Generation date: *2023-04-23T20:49:11.723722283*
