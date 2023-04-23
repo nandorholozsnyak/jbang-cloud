@@ -16,7 +16,7 @@ jobs:
         name: Generate catalog document
         with:
           version: early-access
-          arguments: generate jbang-catalog.json -o README.adoc --custom-header=header.adoc --include-generation-date=true
+          arguments: generate jbang-catalog.json -o README.adoc --custom-header=header.adoc --include-generation-date=true -hfdr=true
       - name: Commit document changes
         shell: bash
         run: |
