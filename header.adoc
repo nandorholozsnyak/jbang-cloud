@@ -1,3 +1,10 @@
-Welcome to this JBang catalog!
+= Welcome to this JBang catalog!
 
 It contains mostly cloud related templates to make sure you can start writing your Lambda functions easily :)
+
+== How to add this catalog?
+
+[source]
+----
+jbang catalog add --name "personal-rodnan" -d "Rodnan JBang catalog" https://raw.githubusercontent.com/nandorholozsnyak/jbang-cloud/main/jbang-catalog.json
+----
