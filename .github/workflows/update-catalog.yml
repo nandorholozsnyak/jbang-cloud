@@ -12,10 +12,9 @@ jobs:
     if: startsWith(github.event.head_commit.message, 'Updating jbang-catalog documentation') != true
     steps:
       - uses: actions/checkout@v3
-      - uses: rodnansol/jbang-catalog-document-generator-action@v0.1.0
+      - uses: rodnansol/jbang-catalog-document-generator-action@v0.1.1
         name: Generate catalog document
         with:
-          version: early-access
           arguments: generate jbang-catalog.json -o README.adoc --custom-header=header.adoc --include-generation-date=true -hfdr=true
       - name: Commit document changes
         shell: bash
