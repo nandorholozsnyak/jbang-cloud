@@ -211,4 +211,4 @@ jbang init -t=q-aws-lambda-ecs-event-tf -Dproperty=value scriptOrFile
 
 
 
-Generation date: *2023-04-23T20:49:11.723722283*
+Generation date: *2023-04-24T19:04:27.364625184*
