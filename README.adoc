@@ -23,7 +23,7 @@ jbang catalog add --name "personal-rodnan" -d "Rodnan JBang catalog" https://raw
 Quarkus AWS Lambda template
 [source, bash]
 ----
-jbang init -t=q-aws-lambda -Dproperty=value scriptOrFile
+jbang init -t=q-aws-lambda@personal-rodnan -Dproperty=value <scriptOrFile>
 ----
 
 [%collapsible]
@@ -45,7 +45,7 @@ jbang init -t=q-aws-lambda -Dproperty=value scriptOrFile
 Quarkus AWS Lambda template with Terraform template. Use the -Dnative-function flag to have native image based Terraform resources
 [source, bash]
 ----
-jbang init -t=q-aws-lambda-tf -Dproperty=value scriptOrFile
+jbang init -t=q-aws-lambda-tf@personal-rodnan -Dproperty=value <scriptOrFile>
 ----
 
 [%collapsible]
@@ -76,7 +76,7 @@ jbang init -t=q-aws-lambda-tf -Dproperty=value scriptOrFile
 Quarkus AWS Lambda template with incoming SQS event
 [source, bash]
 ----
-jbang init -t=q-aws-lambda-sqs -Dproperty=value scriptOrFile
+jbang init -t=q-aws-lambda-sqs@personal-rodnan -Dproperty=value <scriptOrFile>
 ----
 
 [%collapsible]
@@ -98,7 +98,7 @@ jbang init -t=q-aws-lambda-sqs -Dproperty=value scriptOrFile
 Quarkus AWS Lambda template with incoming SQS event
 [source, bash]
 ----
-jbang init -t=q-aws-lambda-sqs-tf -Dproperty=value scriptOrFile
+jbang init -t=q-aws-lambda-sqs-tf@personal-rodnan -Dproperty=value <scriptOrFile>
 ----
 
 [%collapsible]
@@ -130,7 +130,7 @@ jbang init -t=q-aws-lambda-sqs-tf -Dproperty=value scriptOrFile
 Quarkus AWS Lambda template with incoming S3 event
 [source, bash]
 ----
-jbang init -t=q-aws-lambda-s3 -Dproperty=value scriptOrFile
+jbang init -t=q-aws-lambda-s3@personal-rodnan -Dproperty=value <scriptOrFile>
 ----
 
 [%collapsible]
@@ -152,7 +152,7 @@ jbang init -t=q-aws-lambda-s3 -Dproperty=value scriptOrFile
 Quarkus AWS Lambda template with incoming S3 event
 [source, bash]
 ----
-jbang init -t=q-aws-lambda-s3-tf -Dproperty=value scriptOrFile
+jbang init -t=q-aws-lambda-s3-tf@personal-rodnan -Dproperty=value <scriptOrFile>
 ----
 
 [%collapsible]
@@ -183,7 +183,7 @@ jbang init -t=q-aws-lambda-s3-tf -Dproperty=value scriptOrFile
 Quarkus AWS Lambda template to handle ECS event
 [source, bash]
 ----
-jbang init -t=q-aws-lambda-ecs-event-tf -Dproperty=value scriptOrFile
+jbang init -t=q-aws-lambda-ecs-event-tf@personal-rodnan -Dproperty=value <scriptOrFile>
 ----
 
 [%collapsible]
@@ -211,4 +211,4 @@ jbang init -t=q-aws-lambda-ecs-event-tf -Dproperty=value scriptOrFile
 
 
 
-Generation date: *2023-04-24T19:04:27.364625184*
+Generation date: *2023-04-25T19:56:58.199009017*
